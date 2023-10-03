@@ -39,17 +39,29 @@ public class StringListImpl implements StringList {
 
     @Override
     public boolean contains(String item) {
-        return false;
+        return indexOf(item) != -1;
     }
 
     @Override
     public int indexOf(String item) {
-        return 0;
+        for (int i = 0; i < size; i++) {
+            String s = storage[i];
+            if (s.equals(item)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
     public int lastIndexOf(String item) {
-        return 0;
+        for (int i = size - 1; i > 0; i--) {
+            String s = storage[i];
+            if (s.equals(item)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
