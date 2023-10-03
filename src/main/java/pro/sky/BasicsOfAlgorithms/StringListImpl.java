@@ -1,5 +1,7 @@
 package pro.sky.BasicsOfAlgorithms;
 
+import java.util.Arrays;
+
 public class StringListImpl implements StringList {
     private final String[] storage;
     private int size;
@@ -9,7 +11,7 @@ public class StringListImpl implements StringList {
     }
     public StringListImpl(int initSize) {
         storage = new String[initSize];
-
+    }
         @Override
     public String add(String item) {
         return null;
@@ -57,26 +59,44 @@ public class StringListImpl implements StringList {
 
     @Override
     public boolean equals(StringList otherList) {
-        return false;
+        return Arrays.equals(this.toArray(), otherList.toArray());
     }
 
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
+        if (storage.length == 0) {
+            return true;
+        }
         return false;
     }
 
     @Override
     public void clear() {
-
+        size = 0;
     }
 
     @Override
     public String[] toArray() {
-        return new String[0];
+        return Arrays.copyOf(storage, size);
+    }
+    public void validateItem(String item) {
+        if (item == null) {
+            throw new NullItemException();
+        }
+    }
+    private void validateSize () {
+        if (size == storage.length) {
+            throw new StorageIsFullException();
+        }
+    }
+    private void validateIndex (int index) {
+        if (index < 0 || index >=size) {
+            throw new InvalidIndexException();
+        }
     }
 }
