@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class IntegerListImpl implements IntegerList {
+public abstract class IntegerListImpl implements IntegerList {
     private final Integer[] storage;
     List<Integer> arr = new ArrayList<> (List.of(2, 3, 5, 9, 56, 60, 1, 8, 32, 155));
+    List<Integer> arr_2 = List.copyOf(arr);
+    List<Integer> arr_3 = List.copyOf(arr);
     private int size;
 
     public IntegerListImpl() {
@@ -83,7 +85,9 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public boolean contains(Integer item) {
-        return indexOf(item) != -1;
+        Integer[] storageCopy = toArray();
+        sortInsertion(storageCopy);
+        return binarySearch(storageCopy, item);
     }
 
     @Override
@@ -165,7 +169,7 @@ public class IntegerListImpl implements IntegerList {
         arr[indexA] = arr[indexB];
         arr[indexB] = tmp;
     }
-
+    long start = System.currentTimeMillis();
     public static void sortBubble(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             for (int j = 0; j < arr.length - 1 - i; j++) {
@@ -175,5 +179,55 @@ public class IntegerListImpl implements IntegerList {
             }
         }
     }
+    long start2 = System.currentTimeMillis();
+    public static void sortSelection(int[] arr) {
+        for (int i = 0; i < arr.length - 1; i++) {
+            int minElementIndex = i;
+            for (int j = i + 1; j < arr.length; j++) {
+                if (arr[j] < arr[minElementIndex]) {
+                    minElementIndex = j;
+                }
+            }
+            swapElements(arr, i, minElementIndex);
+        }
+    }
+
+    public  void sortInsertion(Integer[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            int temp = arr[i];
+            int j = i;
+            while (j > 0 && arr[j - 1] >= temp) {
+                arr[j] = arr[j - 1];
+                j--;
+            }
+            arr[j] = temp;
+        }
+    }
+    long start3 = System.currentTimeMillis();
+     sortInsertion(arr);
+    System.out.println(System.currentTimeMillis() - start3);
+
+
+
+    public static boolean binarySearch(Integer[] arr, int item) {
+        int min = 0;
+        int max = arr.length - 1;
+
+        while (min <= max) {
+            int mid = (min + max) / 2;
+
+            if (item == arr[mid]) {
+                return true;
+            }
+
+            if (item < arr[mid]) {
+                max = mid - 1;
+            } else {
+                min = mid + 1;
+            }
+        }
+        return false;
+    }
+
 
 }
