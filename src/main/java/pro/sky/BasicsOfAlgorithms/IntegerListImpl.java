@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class IntegerListImpl implements IntegerList {
-    private final Integer[] storage;
-    List<Integer> arr = new ArrayList<> (List.of(2, 3, 5, 9, 56, 60, 1, 8, 32, 155));
+    private Integer[] storage;
+    List<Integer> arr = new ArrayList<>(List.of(2, 3, 5, 9, 56, 60, 1, 8, 32, 155));
     List<Integer> arr_2 = List.copyOf(arr);
     List<Integer> arr_3 = List.copyOf(arr);
     private int size;
@@ -21,7 +21,7 @@ public abstract class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer add(Integer item) {
-        validateSize();
+        growIfNeeded();
         validateItem(item);
         storage[size++] = item;
         return item;
@@ -29,7 +29,7 @@ public abstract class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer add(int index, Integer item) {
-        validateSize();
+        growIfNeeded();
         validateItem(item);
         validateIndex(index);
         if (index == size) {
@@ -40,7 +40,7 @@ public abstract class IntegerListImpl implements IntegerList {
 //        for (int i = size - 1; i > index; i--) {
 //           storage[i] = storage[i-1];
 //        }
-        System.arraycopy(storage, index, storage, index +1,size - index);
+        System.arraycopy(storage, index, storage, index + 1, size - index);
         storage[index] = item;
         return item;
     }
@@ -69,7 +69,7 @@ public abstract class IntegerListImpl implements IntegerList {
 //        }
 //        size--;
 //        return item;
-       return remove(index);
+        return remove(index);
     }
 
     @Override
@@ -86,7 +86,7 @@ public abstract class IntegerListImpl implements IntegerList {
     @Override
     public boolean contains(Integer item) {
         Integer[] storageCopy = toArray();
-        sortInsertion(storageCopy);
+        sort(storageCopy);
         return binarySearch(storageCopy, item);
     }
 
@@ -152,9 +152,9 @@ public abstract class IntegerListImpl implements IntegerList {
         }
     }
 
-    private void validateSize() {
+    private void growIfNeeded() {
         if (size == storage.length) {
-            throw new StorageIsFullException();
+            grow();
         }
     }
 
@@ -164,13 +164,14 @@ public abstract class IntegerListImpl implements IntegerList {
         }
     }
 
-    private static void swapElements(int[] arr, int indexA, int indexB) {
+    private static void swapElements(Integer[] arr, int indexA, int indexB) {
         int tmp = arr[indexA];
         arr[indexA] = arr[indexB];
         arr[indexB] = tmp;
     }
-    long start = System.currentTimeMillis();
-    public static void sortBubble(int[] arr) {
+
+    //    long start = System.currentTimeMillis();
+    public static void sortBubble(Integer[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             for (int j = 0; j < arr.length - 1 - i; j++) {
                 if (arr[j] > arr[j + 1]) {
@@ -179,8 +180,8 @@ public abstract class IntegerListImpl implements IntegerList {
             }
         }
     }
-    long start2 = System.currentTimeMillis();
-    public static void sortSelection(int[] arr) {
+
+    public static void sortSelection(Integer[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             int minElementIndex = i;
             for (int j = i + 1; j < arr.length; j++) {
@@ -192,21 +193,44 @@ public abstract class IntegerListImpl implements IntegerList {
         }
     }
 
-    public  void sortInsertion(Integer[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            int temp = arr[i];
-            int j = i;
-            while (j > 0 && arr[j - 1] >= temp) {
-                arr[j] = arr[j - 1];
-                j--;
-            }
-            arr[j] = temp;
+    //    public void sortInsertion(Integer[] arr) {
+//        for (int i = 1; i < arr.length; i++) {
+//            int temp = arr[i];
+//            int j = i;
+//            while (j > 0 && arr[j - 1] >= temp) {
+//                arr[j] = arr[j - 1];
+//                j--;
+//            }
+//            arr[j] = temp;
+//        }
+//    }
+    public void sort(Integer[] arr) {
+        quickSort(arr, 0, arr.length - 1);
+    }
+
+    private void quickSort(Integer[] arr, int begin, int end) {
+        if (begin < end) {
+            int partitionIndex = partition(arr, begin, end);
+
+            quickSort(arr, begin, partitionIndex - 1);
+            quickSort(arr, partitionIndex + 1, end);
         }
     }
-    long start3 = System.currentTimeMillis();
-     sortInsertion(arr);
-    System.out.println(System.currentTimeMillis() - start3);
 
+    private int partition(Integer[] arr, int begin, int end) {
+        int pivot = arr[end];
+        int i = (begin - 1);
+
+        for (int j = begin; j < end; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+
+                swapElements(arr, i, j);
+            }
+        }
+        swapElements(arr, i + 1, end);
+        return i + 1;
+    }
 
 
     public static boolean binarySearch(Integer[] arr, int item) {
@@ -229,5 +253,8 @@ public abstract class IntegerListImpl implements IntegerList {
         return false;
     }
 
+    private void grow() {
+        storage = Arrays.copyOf(storage, size + size / 2);
+    }
 
 }
