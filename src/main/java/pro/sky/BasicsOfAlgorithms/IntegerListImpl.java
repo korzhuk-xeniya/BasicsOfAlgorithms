@@ -169,7 +169,7 @@ public abstract class IntegerListImpl implements IntegerList {
         arr[indexA] = arr[indexB];
         arr[indexB] = tmp;
     }
-    long start = System.currentTimeMillis();
+//    long start = System.currentTimeMillis();
     public static void sortBubble(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             for (int j = 0; j < arr.length - 1 - i; j++) {
@@ -179,7 +179,7 @@ public abstract class IntegerListImpl implements IntegerList {
             }
         }
     }
-    long start2 = System.currentTimeMillis();
+
     public static void sortSelection(int[] arr) {
         for (int i = 0; i < arr.length - 1; i++) {
             int minElementIndex = i;
@@ -203,9 +203,7 @@ public abstract class IntegerListImpl implements IntegerList {
             arr[j] = temp;
         }
     }
-    long start3 = System.currentTimeMillis();
-     sortInsertion(arr);
-    System.out.println(System.currentTimeMillis() - start3);
+
 
 
 
